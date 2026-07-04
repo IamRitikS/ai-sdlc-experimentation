@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import subprocess
+import sys
 from pathlib import Path
 
 from langchain_core.tools import tool
@@ -32,7 +33,7 @@ def run_pytest(sub_dir: str = "", extra_args: str = "--tb=short -q") -> str:
         Combined stdout/stderr from pytest.
     """
     cwd = str(Path(OUTPUT_DIR) / sub_dir) if sub_dir else OUTPUT_DIR
-    cmd = ["python", "-m", "pytest"] + extra_args.split()
+    cmd = [sys.executable, "-m", "pytest"] + extra_args.split()
     code, out = _run(cmd, cwd=cwd)
     prefix = "PASS" if code == 0 else "FAIL"
     return f"[{prefix}]\n{out}"
@@ -65,7 +66,7 @@ def run_ruff(relative_path: str = ".") -> str:
         Ruff output.
     """
     target = str(Path(OUTPUT_DIR) / relative_path)
-    code, out = _run(["python", "-m", "ruff", "check", target])
+    code, out = _run([sys.executable, "-m", "ruff", "check", target])
     return out or "No issues found."
 
 
