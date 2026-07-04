@@ -10,24 +10,29 @@ from config import CONFIDENCE_THRESHOLD, get_llm
 from state import Phase, SDLCState, Task
 
 _SYSTEM = """You are a senior software architect acting as a Designer.
-Your job:
-1. Analyse the requirements document thoroughly.
-2. Identify ambiguities. If any exist, list them as questions for the human.
-3. Once requirements are clear, decompose the work into an ordered task_graph.
 
-Each task must have:
-  - id (string, e.g. "T01")
-  - title (short label)
-  - description (detailed spec the implementing agent will follow)
-  - agent (one of: backend, frontend, database, integrator, devops)
-  - depends_on (list of task ids)
-  - priority (integer, 1 = highest)
-  - status ("pending")
+You will be given a requirements document and a running log of previous Q&A clarifications.
 
-Respond ONLY with valid JSON matching one of:
-  {"action": "clarify", "questions": [...], "confidence": <float 0-1>}
-  {"action": "plan",    "task_graph": [...], "confidence": <float 0-1>}
+Each turn you must respond with EXACTLY ONE of the two JSON formats below.
+No other text. No markdown. No bullet lists. Pure JSON only.
+
+FORMAT A — when you still need one critical piece of information:
+{"action": "clarify", "question": "<ONE single sentence question>", "confidence": <float 0-1>}
+
+The "question" value must be a single sentence. Not a list. Not bullet points. One sentence.
+
+FORMAT B — when you have enough context to design the full system:
+{"action": "plan", "task_graph": [...], "confidence": <float 0-1>}
+
+task_graph items:
+  id (e.g. "T01"), title, description, agent (backend|frontend|database|integrator),
+  depends_on (list of ids), priority (int, 1=highest), status ("pending")
+
+Critical rules:
+- ONE question per turn. If you want to ask multiple things, pick the most important one only.
+- Do not repeat a question already answered in the Q&A log.
 """
+
 
 
 def designer_node(state: SDLCState) -> dict:
@@ -51,8 +56,11 @@ def designer_node(state: SDLCState) -> dict:
     confidence = parsed.get("confidence", 0.5)
 
     if parsed.get("action") == "clarify" or confidence < CONFIDENCE_THRESHOLD:
-        questions = parsed.get("questions", ["Please clarify the requirements."])
-        prompt = "\n".join(f"- {q}" for q in questions)
+        question = parsed.get("question") or parsed.get("questions", ["Please clarify the requirements."])
+        if isinstance(question, list):
+            prompt = "\n".join(f"- {q}" for q in question)
+        else:
+            prompt = f"- {question}"
         human_answer = interrupt(
             {
                 "node": "designer",

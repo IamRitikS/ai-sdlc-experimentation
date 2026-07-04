@@ -1,4 +1,8 @@
 *.key
 *.env
 *.db
-__pycache__
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+*.db-shm
+*.db-wal
