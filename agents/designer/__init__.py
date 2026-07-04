@@ -25,7 +25,7 @@ FORMAT B — when you have enough context to design the full system:
 {"action": "plan", "task_graph": [...], "confidence": <float 0-1>}
 
 task_graph items:
-  id (e.g. "T01"), title, description, agent (backend|frontend|database|integrator),
+  id (e.g. "T01"), title, description, agent (backend|frontend|database),
   depends_on (list of ids), priority (int, 1=highest), status ("pending")
 
 Critical rules:
