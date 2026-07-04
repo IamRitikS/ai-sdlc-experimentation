@@ -44,6 +44,8 @@ def _route_after_supervisor(state: SDLCState) -> list[Send]:
         node_name = agent_node_map.get(agent_key)
         if node_name and tasks:
             sends.append(Send(node_name, state))
+        elif tasks:
+            print(f"[supervisor] WARNING: unknown agent key '{agent_key}' ignored")
     return sends if sends else [Send("integrator", state)]
 
 

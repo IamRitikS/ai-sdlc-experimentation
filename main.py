@@ -32,8 +32,14 @@ def _print_event(event: dict) -> None:
 
 def _summarise(output: dict) -> str:
     lines = []
+    if "clarifications" in output and output["clarifications"]:
+        lines.append(f"Clarification recorded: {output['clarifications'][-1]!r}")
     if "task_graph" in output:
         lines.append(f"Tasks emitted: {len(output['task_graph'])}")
+    if "supervisor_assignments" in output:
+        for agent, tasks in output["supervisor_assignments"].items():
+            ids = [t["id"] for t in tasks]
+            lines.append(f"  → {agent}: {ids}")
     if "artifacts" in output:
         lines.append(f"Artifacts: {list(output['artifacts'].keys())}")
     if "test_results" in output:
@@ -42,6 +48,11 @@ def _summarise(output: dict) -> str:
             lines.append(f"  {status} {r['agent']} (coverage={r['coverage']:.0%})")
     if "security_findings" in output:
         lines.append(f"Security findings: {len(output['security_findings'])}")
+    if "perf_results" in output and output["perf_results"]:
+        issues = output["perf_results"].get("issues", [])
+        lines.append(f"Perf issues: {len(issues)}")
+    if "review_comments" in output:
+        lines.append(f"Review comments: {len(output['review_comments'])}")
     if "failed_nodes" in output and output["failed_nodes"]:
         lines.append(f"[red]Failed: {output['failed_nodes']}[/red]")
     return "\n".join(lines) or "(no summary)"

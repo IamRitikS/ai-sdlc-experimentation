@@ -15,6 +15,9 @@ You receive a task_graph and any failure reports, and you decide:
   2. Whether any failed tasks need to be reassigned or re-specced.
   3. Whether human approval is needed before proceeding.
 
+Valid agent names for assignments are ONLY: backend, frontend, database.
+Do NOT assign tasks to integrator, qa, or any other agent.
+
 Respond ONLY with valid JSON:
 {
   "assignments": {
