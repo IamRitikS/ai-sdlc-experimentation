@@ -1,0 +1,33 @@
+I want a Notes App with the following requirements:
+
+AUTHENTICATION
+- Users can register with their name, email, and password
+- Users can log in and log out
+- Only logged-in users can access the app
+- Sessions should persist so users don't have to log in every time they open the app
+
+NOTES
+- A user can create a note with a title and a body
+- The body should support basic rich text (bold, italic, bullet points)
+- A user can edit any of their notes
+- A user can delete a note
+- Deleted notes go to a Trash section and can be restored or permanently deleted
+- Users can only see their own notes, never anyone else's
+
+ORGANISATION
+- Users can add tags to notes (e.g. "work", "personal", "ideas")
+- Users can filter notes by tag
+- Users can search notes by keyword (searches title and body)
+- Notes list should be sortable by date created, date modified, or title
+
+NAVIGATION & UI
+- Clean web interface with a sidebar for navigation
+- Sidebar shows: All Notes, Trash, and a list of the user's tags
+- Clicking a tag in the sidebar filters the notes list to that tag
+- There is a button to create a new note
+- Selecting a note from the list opens it in an editor on the same page
+- The app should work well on both desktop and mobile screen sizes
+
+USER ACCOUNT
+- User can see their name/email in the sidebar or header
+- User can log out from the UI
